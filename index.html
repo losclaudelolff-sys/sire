@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffd6e7">
+<title>Central de Distração do Cabritinho 🐐</title>
+<meta name="description" content="Uma coleção de brincadeiras bobas, animais fofos e piadas ruins preparada para distrair o cabritinho.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ffc8dd; --pink-d:#ff8fb8; --lilac:#d9c6ff; --lilac-d:#9b7bff;
+  --mint:#c3f0dc; --mint-d:#43c59e; --sky:#bde0fe; --sky-d:#5aa9f0;
+  --peach:#ffd8be; --peach-d:#ff9f6b; --lemon:#fff3b0; --lemon-d:#f2c94c;
+  --ink:#4a3b5c; --ink-soft:#7a6b8c; --card:#fffdfb;
+  --radius:28px; --shadow:0 18px 40px -18px rgba(110,70,140,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,#ffe3ef 0%,#efe4ff 45%,#dff4ff 100%);
+  background-attachment:fixed;min-height:100dvh;overflow-x:hidden;
+  display:flex;flex-direction:column;
+}
+h1,h2,h3{font-family:'Baloo 2',cursive;line-height:1.1}
+button{font-family:inherit;cursor:pointer;border:none}
+
+/* Bolhas de fundo */
+.bg-bubbles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-bubbles span{position:absolute;bottom:-60px;font-size:26px;opacity:.35;animation:floatUp linear infinite}
+@keyframes floatUp{to{transform:translateY(-120vh) rotate(360deg)}}
+
+/* Topo */
+header{position:sticky;top:0;z-index:5;padding:calc(12px + env(safe-area-inset-top)) 18px 10px;
+  background:rgba(255,248,252,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.top-row{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:13px;color:var(--ink-soft);margin-bottom:8px}
+.badge{background:#fff;padding:4px 10px;border-radius:99px;box-shadow:0 3px 10px -4px rgba(0,0,0,.15)}
+.progress{height:10px;background:#fff;border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.progress-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--pink-d),var(--lilac-d),var(--sky-d));transition:width .6s cubic-bezier(.3,1.4,.5,1)}
+.dots{display:flex;justify-content:space-between;margin-top:8px;padding:0 2px}
+.dot{font-size:16px;filter:grayscale(1);opacity:.4;transition:.3s;transform:scale(.85)}
+.dot.done{filter:none;opacity:.85}
+.dot.active{filter:none;opacity:1;transform:scale(1.25)}
+
+/* Cards */
+main{flex:1;position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto;padding:14px 14px 110px}
+.card{display:none;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:24px 20px 26px;position:relative;overflow:hidden;border:3px solid #fff}
+.card.active{display:block;animation:cardIn .55s cubic-bezier(.2,1.3,.4,1)}
+.card.back.active{animation:cardInBack .55s cubic-bezier(.2,1.3,.4,1)}
+@keyframes cardIn{from{opacity:0;transform:translateX(40px) rotate(3deg) scale(.95)}to{opacity:1;transform:none}}
+@keyframes cardInBack{from{opacity:0;transform:translateX(-40px) rotate(-3deg) scale(.95)}to{opacity:1;transform:none}}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:120px;opacity:.55;z-index:0;
+  background:radial-gradient(circle at 20% 0,var(--accent,var(--pink)) 0,transparent 70%)}
+.card>*{position:relative;z-index:1}
+.tag{display:inline-block;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 12px;border-radius:99px;background:var(--accent,var(--pink));margin-bottom:10px}
+.card h1,.card h2{font-size:clamp(26px,7.5vw,34px);margin-bottom:10px}
+.card p.lead{font-size:16.5px;line-height:1.55;color:var(--ink-soft)}
+.center{text-align:center}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:16px;
+  padding:14px 22px;border-radius:18px;background:var(--accent-d,var(--pink-d));color:#fff;
+  box-shadow:0 6px 0 rgba(0,0,0,.12),0 10px 20px -8px var(--accent-d,var(--pink-d));transition:transform .12s, box-shadow .12s;min-height:50px}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.12)}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.08),0 8px 18px -10px rgba(0,0,0,.3)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
+.bubble{background:#fff;border-radius:20px;padding:14px 16px;box-shadow:0 8px 22px -12px rgba(0,0,0,.25);
+  font-weight:700;line-height:1.5;position:relative;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Card 1 */
+.hero-goat{width:190px;max-width:60%;margin:6px auto 4px;display:block;animation:bob 3s ease-in-out infinite}
+.stamp{display:inline-block;margin:14px 0 18px;padding:6px 14px;border:3px dashed var(--lilac-d);color:var(--lilac-d);
+  border-radius:12px;font-weight:800;transform:rotate(-4deg);font-size:13px}
+
+/* Card 2 */
+.case-file{background:repeating-linear-gradient(0deg,#fffbe8 0 26px,#f3e7b8 26px 27px);border-radius:18px;padding:14px;
+  border:2px solid #f0dca0;margin:14px 0;min-height:70px}
+.case-file h3{font-size:18px;margin-bottom:6px}
+.case-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.case-list li{font-weight:700;font-size:15px;line-height:1.45;animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+.case-list .empty{color:#b9a76a;font-style:italic;font-weight:600}
+.counter{font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center;margin-top:8px}
+.wanted{display:none;margin-top:16px;background:#fff6dc;border:4px solid #c9a35b;border-radius:14px;padding:16px;text-align:center;
+  box-shadow:0 10px 24px -12px rgba(120,80,20,.5);animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+.wanted.show{display:block}
+.wanted h3{font-size:34px;color:#a5662a;letter-spacing:.08em}
+.wanted svg{width:150px;margin:6px auto;display:block;animation:wiggle 1.4s ease-in-out infinite}
+.wanted p{font-weight:700;line-height:1.5}
+.wanted .reward{margin-top:8px;font-size:14px;color:#8a6a3a}
+
+/* Card 3 */
+.zoo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0 12px}
+.animal{aspect-ratio:1;border-radius:20px;font-size:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--c,#fff);box-shadow:0 5px 0 rgba(0,0,0,.08);transition:transform .15s}
+.animal small{font-size:10.5px;font-weight:800;margin-top:2px;color:var(--ink)}
+.animal:active{transform:scale(.9)}
+.animal.picked{animation:wiggle .5s ease 2;outline:3px solid var(--lilac-d)}
+.zoo-out{display:flex;gap:12px;align-items:flex-start;min-height:96px}
+.zoo-out .face{font-size:46px;flex-shrink:0;animation:bob 2s ease-in-out infinite}
+.zoo-out .bubble{flex:1}
+.zoo-out .bubble b{display:block;color:var(--lilac-d);margin-bottom:2px}
+
+/* Card 4 */
+.joke-box{margin:16px 0;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,#fff8d6,#ffe8f1);border-radius:22px;padding:20px 16px;border:3px dashed var(--lemon-d)}
+.joke-emoji{font-size:44px;margin-bottom:8px}
+.joke-text{font-size:18px;font-weight:800;line-height:1.5}
+.joke-punch{margin-top:10px;font-size:16px;color:var(--peach-d);font-weight:800}
+.meter{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.meter button{background:#fff;border-radius:99px;padding:8px 12px;font-weight:800;font-size:13px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.meter button:active{transform:scale(.92)}
+.react{text-align:center;font-weight:700;color:var(--ink-soft);margin-top:8px;min-height:22px;font-size:14px}
+
+/* Card 5 */
+.section{background:#fff;border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 8px 22px -14px rgba(0,0,0,.3)}
+.section h3{font-size:20px;margin-bottom:6px}
+.trophy{font-size:56px;text-align:center;display:block;animation:bob 2.4s ease-in-out infinite}
+.envelope{min-height:64px;text-align:center;font-weight:800;line-height:1.5;margin:8px 0 12px}
+.quiz-q{font-weight:800;font-size:16px;margin:6px 0 10px}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opts button{text-align:left;background:var(--sky);padding:12px 14px;border-radius:14px;font-weight:700;font-size:15px;color:var(--ink);
+  box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.quiz-opts button:active{transform:translateY(3px)}
+.quiz-result{display:none;text-align:center;animation:pop .5s}
+.quiz-result.show{display:block}
+.quiz-result .big{font-size:52px}
+.quiz-result h4{font-family:'Baloo 2';font-size:22px;margin:4px 0}
+.quiz-result p{line-height:1.5;font-weight:600}
+.quiz-step{font-size:12px;font-weight:800;color:var(--ink-soft)}
+
+/* Card 6 */
+.ocean{position:relative;margin:14px 0;border-radius:22px;height:190px;overflow:hidden;
+  background:linear-gradient(180deg,#bde0fe 0%,#8fc7f5 60%,#f9e2b4 60%,#f3d197 100%)}
+.ocean .bub{position:absolute;bottom:40%;width:10px;height:10px;border-radius:50%;border:2px solid rgba(255,255,255,.8);animation:rise 4s linear infinite}
+@keyframes rise{to{transform:translateY(-140px);opacity:0}}
+.table{position:absolute;left:8%;right:8%;bottom:16%;height:26px;background:#b07a4f;border-radius:10px;box-shadow:0 6px 0 #8a5c38}
+.table::after{content:"ASSEMBLEIA";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#ffe9c9;font-weight:800;font-size:11px;letter-spacing:.2em}
+.member{position:absolute;bottom:calc(16% + 22px);font-size:42px;transition:transform .3s;animation:bob 2.2s ease-in-out infinite}
+.member.speaking{animation:speak .45s ease-in-out infinite}
+@keyframes speak{0%,100%{transform:translateY(0) scale(1.15)}50%{transform:translateY(-14px) scale(1.25) rotate(-6deg)}}
+.gavel{position:absolute;top:10px;right:12px;font-size:30px;transform-origin:bottom right}
+.gavel.hit{animation:hit .5s ease}
+@keyframes hit{0%,100%{transform:rotate(0)}40%{transform:rotate(-40deg)}70%{transform:rotate(10deg)}}
+.proposal .who{font-weight:800;color:var(--sky-d);display:block;margin-bottom:4px}
+.votes{display:flex;justify-content:center;gap:16px;margin-top:10px;font-weight:800;font-size:14px;color:var(--ink-soft)}
+
+/* Card 7 */
+.final{text-align:center;--accent:var(--peach);--accent-d:var(--peach-d)}
+.envelope-big{font-size:70px;display:block;margin:8px auto;animation:bob 2.6s ease-in-out infinite;cursor:pointer}
+.letter{display:none;margin-top:10px;background:linear-gradient(180deg,#fffaf3,#fff);border-radius:22px;padding:22px 18px;
+  border:2px solid #ffe3cc;text-align:left;box-shadow:0 12px 28px -16px rgba(200,120,60,.5)}
+.letter.show{display:block;animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+.letter p{font-size:17px;line-height:1.65;font-weight:700;margin-bottom:14px}
+.sign{font-size:13px;color:var(--ink-soft);font-weight:700;font-style:italic;text-align:right;margin:0!important}
+.restart{margin-top:18px}
+
+/* Navegação */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:6;padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+  background:rgba(255,248,252,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.nav-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.nav-inner .btn{font-size:15px}
+#nextBtn{background:linear-gradient(90deg,var(--pink-d),var(--lilac-d))}
+
+/* Confete */
+.confetti{position:fixed;top:-20px;font-size:22px;z-index:50;pointer-events:none;animation:fall 2.4s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.7}}
+
+.toast{position:fixed;left:50%;top:90px;transform:translateX(-50%);background:var(--ink);color:#fff;font-weight:800;font-size:14px;
+  padding:10px 16px;border-radius:99px;z-index:40;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;top:100px}
+
+@media (min-width:600px){ main{padding-top:26px} .card{padding:30px 28px} }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="bg-bubbles" id="bgBubbles" aria-hidden="true"></div>
+
+<header>
+  <div class="top-row">
+    <span class="badge" id="stepLabel">Card 1 de 7</span>
+    <span class="badge">🐐 Operação Distração</span>
+  </div>
+  <div class="progress" role="progressbar" aria-label="Progresso" aria-valuemin="0" aria-valuemax="100" id="progressBar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="dots" id="dots" aria-hidden="true"></div>
+</header>
+
+<main id="stage">
+
+  <!-- CARD 1 -->
+  <section class="card center" data-icon="🐐" style="--accent:var(--lilac);--accent-d:var(--lilac-d)">
+    <span class="tag">🐐 Central de distração</span>
+    <svg class="hero-goat" viewBox="0 0 200 200" aria-label="Desenho de um cabritinho fofo">
+      <ellipse cx="100" cy="182" rx="60" ry="8" fill="#000" opacity=".08"/>
+      <ellipse cx="108" cy="140" rx="55" ry="34" fill="#fff" stroke="#e6d9f5" stroke-width="3"/>
+      <rect x="70" y="160" width="10" height="22" rx="5" fill="#f1e6fb"/><rect x="132" y="160" width="10" height="22" rx="5" fill="#f1e6fb"/>
+      <path d="M160 128c10-6 14 0 10 8" stroke="#e6d9f5" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M68 52c-8-22 4-34 14-30-8 6-10 16-4 28z" fill="#d9b48a"/>
+      <path d="M112 52c8-22-4-34-14-30 8 6 10 16 4 28z" fill="#d9b48a"/>
+      <ellipse cx="50" cy="70" rx="18" ry="8" fill="#ffd1e3" transform="rotate(-25 50 70)"/>
+      <ellipse cx="130" cy="70" rx="18" ry="8" fill="#ffd1e3" transform="rotate(25 130 70)"/>
+      <ellipse cx="90" cy="84" rx="38" ry="40" fill="#fff" stroke="#e6d9f5" stroke-width="3"/>
+      <circle cx="75" cy="80" r="6" fill="#4a3b5c"/><circle cx="105" cy="80" r="6" fill="#4a3b5c"/>
+      <circle cx="77" cy="78" r="2" fill="#fff"/><circle cx="107" cy="78" r="2" fill="#fff"/>
+      <ellipse cx="66" cy="94" rx="7" ry="4" fill="#ffc8dd"/><ellipse cx="114" cy="94" rx="7" ry="4" fill="#ffc8dd"/>
+      <path d="M82 100q8 7 16 0" stroke="#4a3b5c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M84 118q6 18 12 0z" fill="#e8dcf5"/>
+    </svg>
+    <h1>Bem-vinda à central de distração do cabritinho</h1>
+    <p class="lead">Esse site foi desenvolvido por profissionais altamente desocupados com o objetivo de combater o tédio e tentar arrancar algumas risadas. KKKKKKK</p>
+    <div class="stamp">⚠️ Nível de seriedade: 0%</div>
+    <button class="btn block" id="startBtn">Iniciar operação 😂</button>
+  </section>
+
+  <!-- CARD 2 -->
+  <section class="card" data-icon="🕵️" style="--accent:var(--lemon);--accent-d:#e0a93b">
+    <span class="tag">🐐 O caso do cabritinho</span>
+    <h2>Quem foi o criminoso que atacou o cabelo?</h2>
+    <p class="lead">Arquivo confidencial nº 0001-BÉÉÉ. Um crime capilar abalou a infância de uma cidadã. A polícia (eu) reabriu o caso.</p>
+
+    <div class="case-file">
+      <h3>🔎 Pistas encontradas</h3>
+      <ul class="case-list" id="clueList"><li class="empty">Nenhuma pista ainda. O detetive está tomando café.</li></ul>
+    </div>
+    <div class="case-file" style="background:repeating-linear-gradient(0deg,#f4fbff 0 26px,#d6ebfa 26px 27px);border-color:#bcdcf3">
+      <h3>🎙️ Depoimentos das testemunhas</h3>
+      <ul class="case-list" id="witnessList"><li class="empty">Nenhuma testemunha quis falar sem um petisco.</li></ul>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="clueBtn">🔎 Pista</button>
+      <button class="btn ghost" id="witnessBtn">🎙️ Testemunha</button>
+    </div>
+    <button class="btn block" id="revealBtn" style="margin-top:10px;background:#c9a35b" disabled>🚨 Revelar o suspeito</button>
+    <p class="counter" id="caseCounter">Colete 3 pistas e 3 depoimentos para liberar a revelação</p>
+
+    <div class="wanted" id="wanted">
+      <h3>PROCURADO</h3>
+      <svg viewBox="0 0 200 170" aria-label="Cabrito suspeito com um fio de cabelo na boca">
+        <path d="M68 40c-8-22 4-34 14-30-8 6-10 16-4 28z" fill="#d9b48a"/>
+        <path d="M112 40c8-22-4-34-14-30 8 6 10 16 4 28z" fill="#d9b48a"/>
+        <ellipse cx="48" cy="60" rx="18" ry="8" fill="#ffd1e3" transform="rotate(-25 48 60)"/>
+        <ellipse cx="132" cy="60" rx="18" ry="8" fill="#ffd1e3" transform="rotate(25 132 60)"/>
+        <ellipse cx="90" cy="76" rx="40" ry="42" fill="#fff" stroke="#c9a35b" stroke-width="3"/>
+        <rect x="58" y="66" width="26" height="14" rx="6" fill="#4a3b5c"/><rect x="96" y="66" width="26" height="14" rx="6" fill="#4a3b5c"/>
+        <path d="M84 72h12" stroke="#4a3b5c" stroke-width="3"/>
+        <ellipse cx="64" cy="92" rx="7" ry="4" fill="#ffc8dd"/><ellipse cx="116" cy="92" rx="7" ry="4" fill="#ffc8dd"/>
+        <path d="M80 98q10 8 20 0" stroke="#4a3b5c" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M98 100c14 4 26 -6 40 4s22 -4 34 6" stroke="#5b3a1e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M84 116q6 18 12 0z" fill="#efe2c6"/>
+        <text x="100" y="160" text-anchor="middle" font-family="Baloo 2, cursive" font-weight="800" font-size="16" fill="#a5662a">Vulgo: "O Mastigador"</text>
+      </svg>
+      <p>🐐 <b>Principal suspeito: O CABRITO.</b><br>Foi flagrado com um fio de cabelo na boca e cara de quem "só estava passando".</p>
+      <p style="margin-top:8px">Em sua defesa, disse: <i>"Eu achei que era capim premium."</i></p>
+      <p class="reward">💰 Recompensa: 1 pacote de bolacha e o direito de chamar ele de cabritinho pra sempre (ops, esse título já foi transferido 👀)</p>
+    </div>
+  </section>
+
+  <!-- CARD 3 -->
+  <section class="card" data-icon="🐱" style="--accent:var(--mint);--accent-d:var(--mint-d)">
+    <span class="tag">🐱 Zoológico da bagunça</span>
+    <h2>Os bichos querem falar com você</h2>
+    <p class="lead">Toque num animal pra ouvir o que ele tem a dizer. Nenhum deles foi treinado. Nenhum deles tem filtro.</p>
+    <div class="zoo-grid" id="zooGrid"></div>
+    <div class="zoo-out" id="zooOut">
+      <div class="face">👆</div>
+      <div class="bubble"><b>Recepção do zoológico</b>Escolhe um bichinho aí. Eles estão fazendo fila e o pato já furou.</div>
+    </div>
+    <button class="btn block" id="randomAnimalBtn" style="margin-top:14px">🎲 Sortear um animal</button>
+  </section>
+
+  <!-- CARD 4 -->
+  <section class="card" data-icon="🤡" style="--accent:var(--peach);--accent-d:var(--peach-d)">
+    <span class="tag">🤡 Plantão de piadas ruins</span>
+    <h2>Plantão 24h de piadas duvidosas</h2>
+    <p class="lead">Nossa equipe garante: nenhuma dessas piadas passou por controle de qualidade.</p>
+    <div class="joke-box" id="jokeBox">
+      <div class="joke-emoji" id="jokeEmoji">🎤</div>
+      <div class="joke-text" id="jokeText">Aperta o botão. Prometo que vai ser ruim.</div>
+      <div class="joke-punch" id="jokePunch"></div>
+    </div>
+    <button class="btn block" id="jokeBtn">🤡 Me conta uma piada ruim</button>
+    <div class="meter" id="meter">
+      <button data-r="0">😐 Ruim</button><button data-r="1">🙄 Péssima</button><button data-r="2">😂 Ri sem querer</button>
+    </div>
+    <p class="react" id="jokeReact"></p>
+    <p class="counter" id="jokeCount"></p>
+  </section>
+
+  <!-- CARD 5 -->
+  <section class="card" data-icon="🎤" style="--accent:var(--sky);--accent-d:var(--sky-d)">
+    <span class="tag">🎤 Fã-clube musical</span>
+    <h2>Prêmio Gogó de Ouro 2026</h2>
+    <p class="lead">A maior premiação do sertanejo de quarto. Categoria: cantar alto sozinha como se estivesse num estádio.</p>
+
+    <div class="section">
+      <span class="trophy">🏆</span>
+      <h3 class="center">Abrir o envelope</h3>
+      <div class="envelope" id="awardText">O júri (um cabrito e uma capivara) já decidiu...</div>
+      <button class="btn block" id="awardBtn">✉️ E o prêmio vai para...</button>
+    </div>
+
+    <div class="section">
+      <h3>🎶 Teste: qual é a sua vibe sertaneja?</h3>
+      <div id="quizBox">
+        <div class="quiz-step" id="quizStep">Pergunta 1 de 4</div>
+        <div class="quiz-q" id="quizQ"></div>
+        <div class="quiz-opts" id="quizOpts"></div>
+      </div>
+      <div class="quiz-result" id="quizResult">
+        <div class="big" id="qrEmoji"></div>
+        <h4 id="qrTitle"></h4>
+        <p id="qrText"></p>
+        <button class="btn ghost" id="quizAgain" style="margin-top:12px">🔁 Refazer teste</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARD 6 -->
+  <section class="card" data-icon="🦐" style="--accent:var(--sky);--accent-d:#4a8fd6">
+    <span class="tag">🦐 Reunião dos frutos do mar</span>
+    <h2>Assembleia extraordinária dos frutos do mar</h2>
+    <p class="lead">Pauta do dia: assuntos muito sérios. Ninguém trouxe a ata. O peixe trouxe um biscoito.</p>
+    <div class="ocean" id="ocean">
+      <span class="gavel" id="gavel">🔨</span>
+      <span class="member" data-m="camarao" style="left:12%;animation-delay:0s">🦐</span>
+      <span class="member" data-m="polvo" style="left:32%;animation-delay:.3s">🐙</span>
+      <span class="member" data-m="caranguejo" style="left:53%;animation-delay:.6s">🦀</span>
+      <span class="member" data-m="peixe" style="left:73%;animation-delay:.9s">🐟</span>
+      <div class="table"></div>
+    </div>
+    <div class="bubble proposal" id="proposal"><span class="who">🔨 Presidente da mesa (uma lagosta)</span>Sessão aberta! Aperte o botão pra ouvir a próxima proposta absurda.</div>
+    <button class="btn block" id="proposalBtn" style="margin-top:14px">📜 Nova proposta absurda</button>
+    <div class="btn-row">
+      <button class="btn ghost" id="approveBtn">✅ Aprovar</button>
+      <button class="btn ghost" id="vetoBtn">❌ Vetar</button>
+    </div>
+    <div class="votes"><span id="approveCount">✅ 0 aprovadas</span><span id="vetoCount">❌ 0 vetadas</span></div>
+  </section>
+
+  <!-- CARD FINAL -->
+  <section class="card final" data-icon="💌">
+    <span class="tag">💌 Uma mensagem minha</span>
+    <h2>Fim da operação!</h2>
+    <p class="lead">Você sobreviveu a todas as piadas ruins. Tem uma última coisinha aqui:</p>
+    <span class="envelope-big" id="envelopeBig" role="button" aria-label="Abrir mensagem">💌</span>
+    <button class="btn block" id="openLetterBtn">Abrir mensagem</button>
+    <div class="letter" id="letter">
+      <p>Enfim, melhoras pra tu, viu? Espero que fique bem logo! ❤️</p>
+      <p>E qualquer coisa pode falar comigo, tá? Se precisar conversar, se distrair ou qualquer coisa assim, eu faço mais alguma palhaçada pra tentar te fazer sorrir KKKKKKK 🐐😂</p>
+      <p class="sign">— O responsável oficial pelas palhaçadas.</p>
+    </div>
+    <button class="btn ghost restart" id="restartBtn">🔁 Recomeçar a bagunça</button>
+  </section>
+
+</main>
+
+<nav class="bottom" aria-label="Navegação entre cards">
+  <div class="nav-inner">
+    <button class="btn ghost" id="prevBtn">← Voltar</button>
+    <button class="btn" id="nextBtn">Avançar →</button>
+  </div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+
+  /* Sorteio sem repetir até acabar a lista */
+  function bag(list){
+    let pool = [], last = null;
+    return () => {
+      if (!pool.length) pool = list.map((_, i) => i).sort(() => Math.random() - .5);
+      let i = pool.pop();
+      if (i === last && pool.length) { pool.unshift(i); i = pool.pop(); }
+      last = i; return list[i];
+    };
+  }
+
+  function toast(msg){
+    const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+  function confetti(chars = ['🎉','✨','🐐','💫','🌸']){
+    for (let i = 0; i < 26; i++){
+      const c = document.createElement('span');
+      c.className = 'confetti'; c.textContent = pick(chars);
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.animationDelay = Math.random() * .6 + 's';
+      c.style.fontSize = 16 + Math.random() * 16 + 'px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 3200);
+    }
+  }
+  function vibrate(ms = 15){ if (navigator.vibrate) navigator.vibrate(ms); }
+
+  /* Fundo */
+  const bg = $('#bgBubbles'), bgIcons = ['🐐','🐱','🦐','🐙','🎤','🌸','🐶','🐰','⭐'];
+  for (let i = 0; i < 12; i++){
+    const s = document.createElement('span'); s.textContent = bgIcons[i % bgIcons.length];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.animationDuration = 14 + Math.random() * 14 + 's';
+    s.style.animationDelay = -Math.random() * 20 + 's';
+    bg.appendChild(s);
+  }
+
+  /* ================= Navegação ================= */
+  const cards = [...document.querySelectorAll('.card')];
+  const total = cards.length;
+  let current = 0;
+  const dots = $('#dots');
+  cards.forEach(c => { const d = document.createElement('span'); d.className = 'dot'; d.textContent = c.dataset.icon; dots.appendChild(d); });
+
+  function show(i, dir = 1){
+    if (i < 0 || i >= total) return;
+    cards[current].classList.remove('active','back');
+    current = i;
+    const c = cards[current];
+    c.classList.toggle('back', dir < 0);
+    void c.offsetWidth;
+    c.classList.add('active');
+    $('#stepLabel').textContent = `Card ${current + 1} de ${total}`;
+    const pct = Math.round(current / (total - 1) * 100);
+    $('#progressFill').style.width = pct + '%';
+    $('#progressBar').setAttribute('aria-valuenow', pct);
+    [...dots.children].forEach((d, k) => { d.classList.toggle('active', k === current); d.classList.toggle('done', k < current); });
+    $('#prevBtn').disabled = current === 0;
+    const next = $('#nextBtn');
+    next.style.visibility = current === total - 1 ? 'hidden' : 'visible';
+    next.textContent = current === total - 2 ? 'Última parte 💌' : 'Avançar →';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  $('#prevBtn').onclick = () => { vibrate(); show(current - 1, -1); };
+  $('#nextBtn').onclick = () => { vibrate(); show(current + 1, 1); };
+  $('#startBtn').onclick = () => { vibrate(30); confetti(['😂','🐐','🎉']); toast('Operação iniciada! 🚀'); setTimeout(() => show(1, 1), 350); };
+
+  /* swipe */
+  let sx = 0, sy = 0;
+  $('#stage').addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  $('#stage').addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5){ dx < 0 ? show(current + 1, 1) : show(current - 1, -1); }
+  }, { passive: true });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') show(current + 1, 1);
+    if (e.key === 'ArrowLeft') show(current - 1, -1);
+  });
+
+  /* ================= Card 2: investigação ================= */
+  const clues = [
+    '🧶 Fio de cabelo encontrado no estábulo, cuidadosamente mastigado em formato de trança.',
+    '🦶 Pegadas com casquinho em direção à cena do crime. Humanos não têm casco. Suspeito.',
+    '📸 Foto borrada de uma criatura com chifrinhos e cara de "não fui eu".',
+    '🌿 O capim do quintal estava intacto. Alguém preferiu outro cardápio.',
+    '🧾 Recibo de um salão de beleza: "corte feito por mordida, sem agendamento".',
+    '🔔 Um sininho de pescoço caído perto da vítima. Com a inscrição "BÉÉÉ".'
+  ];
+  const witnesses = [
+    '🐔 Galinha: "Eu vi tudo! Mas esqueci tudo também. Sou galinha."',
+    '🐷 Porco: "Não fui eu, eu estava na lama fazendo skincare."',
+    '🐄 Vaca: "Muuu." (Traduzido: "Ele sempre dizia que cabelo tinha gosto de shampoo de morango.")',
+    '🐶 Cachorro: "Eu só latia pra avisar. Ninguém me escuta nessa fazenda."',
+    '🐱 Gato: "Não vi nada. Eu estava dormindo. Como sempre. Por 18 horas."',
+    '🦆 Pato: "QUÉ QUÉ QUÉ!!!" (O pato foi removido do tribunal por desacato.)'
+  ];
+  const nextClue = bag(clues), nextWitness = bag(witnesses);
+  let clueN = 0, witN = 0;
+  function addTo(list, text){ const ul = $(list); const e = ul.querySelector('.empty'); if (e) e.remove();
+    const li = document.createElement('li'); li.textContent = text; ul.appendChild(li); }
+  function updateCase(){
+    const ok = clueN >= 3 && witN >= 3;
+    $('#revealBtn').disabled = !ok;
+    $('#caseCounter').textContent = ok ? '🚨 Provas suficientes! Hora de revelar o culpado.'
+      : `Pistas: ${Math.min(clueN,3)}/3 · Depoimentos: ${Math.min(witN,3)}/3`;
+  }
+  $('#clueBtn').onclick = () => { vibrate(); if (clueN >= clues.length) return toast('Acabaram as pistas, detetive!'); addTo('#clueList', nextClue()); clueN++; updateCase(); };
+  $('#witnessBtn').onclick = () => { vibrate(); if (witN >= witnesses.length) return toast('Todo mundo já depôs!'); addTo('#witnessList', nextWitness()); witN++; updateCase(); };
+  $('#revealBtn').onclick = () => {
+    vibrate(60); $('#wanted').classList.add('show'); confetti(['🐐','🚨','🧶']);
+    toast('CASO ENCERRADO! 🐐'); setTimeout(() => $('#wanted').scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+  };
+  updateCase();
+
+  /* ================= Card 3: zoológico ================= */
+  const zoo = [
+    { e:'🐱', n:'Gato', c:'#ffe4ec', f:[
+      'Derrubei seu copo da mesa. Não foi acidente. Foi arte contemporânea.',
+      'Curiosidade: gatos dormem uns 70% da vida. Eu tô tentando bater os 100%.',
+      'Meu horário de expediente: correr pela casa às 3h da manhã sem motivo nenhum.'] },
+    { e:'🐶', n:'Cachorro', c:'#fff1d6', f:[
+      'VOCÊ CHEGOU!!! Ah não, era o vento. MAS VOCÊ CHEGOU MESMO ASSIM?!',
+      'Curiosidade: o nariz do cachorro é único, tipo impressão digital. O meu tá molhado, mas é exclusivo.',
+      'Eu não sei o que é um "boa menina", mas eu sou uma.'] },
+    { e:'🦫', n:'Capivara', c:'#efe2d0', f:[
+      'Eu não tenho pressa, não tenho boletos e não tenho pescoço. Vida boa.',
+      'Curiosidade: capivara é o maior roedor do mundo. E o mais tranquilo também.',
+      'Um jacaré sentou do meu lado. A gente só ficou de boa. Recomendo esse nível de paz.'] },
+    { e:'🐰', n:'Coelho', c:'#f3e8ff', f:[
+      'Comi uma cenoura, depois outra, depois mais uma. Estou numa jornada.',
+      'Curiosidade: quando o coelho tá feliz ele dá um pulinho no ar chamado "binky".',
+      'Não tenho tempo pra conversar, estou atrasado pra algo que eu esqueci o que era.'] },
+    { e:'🐐', n:'Cabrito', c:'#e3f6ec', f:[
+      'Não tenho advogado, só tenho fome e péssimas decisões.',
+      'Curiosidade: cabritos têm pupilas retangulares. Ou seja, eu enxergo tudo em widescreen.',
+      'Sobre o caso do cabelo: meu advogado (outro cabrito) me orientou a ficar em silêncio. Béé.'] },
+    { e:'🦆', n:'Pato', c:'#fff9c4', f:[
+      'QUÉ. (Tradução: eu tenho direito à palavra e vou usar mal.)',
+      'Curiosidade: pato tem penas à prova d\'água. Eu sou basicamente uma capa de chuva com opinião.',
+      'Eu furei a fila. E furaria de novo.'] },
+    { e:'🐷', n:'Porquinho', c:'#ffe0ea', f:[
+      'Lama não é sujeira, é spa ao ar livre. Informe-se.',
+      'Curiosidade: porcos são mais inteligentes que muitos cachorros. Não conta pro cachorro.',
+      'Cheguei só pra dizer oi e pegar um lanchinho. Mais lanchinho do que oi.'] },
+    { e:'🐼', n:'Panda', c:'#eef0f3', f:[
+      'Hoje eu comi bambu, rolei, caí e comi bambu de novo. Produtividade.',
+      'Curiosidade: panda come uns 12 a 38 kg de bambu por dia. Ninguém me julga.',
+      'Eu sou preto e branco porque não consegui decidir a roupa.'] }
+  ];
+  const grid = $('#zooGrid'), seen = new Map();
+  zoo.forEach((a, i) => {
+    const b = document.createElement('button');
+    b.className = 'animal'; b.style.setProperty('--c', a.c); b.id = 'animal-' + i;
+    b.innerHTML = `${a.e}<small>${a.n}</small>`; b.setAttribute('aria-label', a.n);
+    b.onclick = () => speakAnimal(i);
+    grid.appendChild(b);
+  });
+  function speakAnimal(i){
+    vibrate(); const a = zoo[i]; const k = seen.get(i) || 0; seen.set(i, k + 1);
+    grid.querySelectorAll('.animal').forEach(x => x.classList.remove('picked'));
+    const el = grid.children[i]; void el.offsetWidth; el.classList.add('picked');
+    $('#zooOut').innerHTML = `<div class="face">${a.e}</div><div class="bubble"><b>${a.n}</b>${a.f[k % a.f.length]}</div>`;
+  }
+  let lastAnimal = -1;
+  $('#randomAnimalBtn').onclick = () => {
+    let i; do { i = Math.floor(Math.random() * zoo.length); } while (i === lastAnimal);
+    lastAnimal = i; speakAnimal(i);
+  };
+
+  /* ================= Card 4: piadas ================= */
+  const jokes = [
+    ['🐱','Por que o gato entrou na internet?','Pra ficar no miau-nline.'],
+    ['🐐','O cabrito foi procurar emprego, mas só sabia trabalhar com lã...','Experiência muito específica.'],
+    ['🐙','Por que o polvo foi expulso da banda?','Porque queria tocar todos os instrumentos.'],
+    ['🦫','Qual é o esporte favorito da capivara?','Nado sincronizado com jacaré. Ela não sabe que é esporte.'],
+    ['🐄','O que a vaca foi fazer no espaço?','Visitar a Via Láctea.'],
+    ['🦆','Por que o pato não usa celular?','Porque ele já tem bico... de voz.'],
+    ['🐝','Qual é o cabelo preferido da abelha?','O cabelo com mel-ches.'],
+    ['🐶','O cachorro abriu uma empresa. Qual o cargo dele?','Au-ditor.'],
+    ['🐟','Por que o peixe é péssimo em segredos?','Porque ele vive com a boca aberta.'],
+    ['🐌','O que o caracol disse quando montou na tartaruga?','"UHUUUL, QUE VELOCIDADE!"'],
+    ['🦀','Por que o caranguejo nunca divide o lanche?','Porque ele é muito "mão-de-vaca"... digo, "pinça-de-vaca".'],
+    ['🐷','Como o porquinho chama a namorada?','Minha porcelana.'],
+    ['🐰','Qual é a música preferida do coelho?','Qualquer uma que tenha muito "hop".'],
+    ['🐸','O que o sapo pediu na lanchonete?','Um sapo-duíche e uma coca-cola light pula.'],
+    ['🦒','Por que a girafa nunca pede desculpa?','Porque demora muito pra engolir o orgulho.'],
+    ['🐑','Como a ovelha se despede?','"Até a lã-próxima!"'],
+    ['🐔','Por que a galinha atravessou o grupo do zap?','Pra chegar do outro lado da fofoca.'],
+    ['🦐','O camarão foi ao médico e disse que se sentia pequeno.','O médico respondeu: "Calma, é só uma fase. Uma fase de camarão."'],
+    ['🐼','Por que o panda não usa Instagram?','Porque ele já é preto e branco, não precisa de filtro.'],
+    ['🐊','O que o jacaré disse pra capivara?','"Fica tranquila." Ela já estava.'],
+    ['🦉','Por que a coruja é ótima professora?','Porque tudo que ela fala é "uhu"-zado com sabedoria.'],
+    ['🐢','Qual o sobrenome da tartaruga?','Devagar e Sempre.'],
+    ['🍞','O pão foi pra academia. Por quê?','Pra ficar com o miolo sarado.'],
+    ['🥚','O ovo foi pra uma festa e alguém contou uma piada.','Ele rachou de rir.'],
+    ['🍌','Por que a banana nunca fica sozinha na festa?','Porque ela sempre anda em cacho.'],
+    ['☁️','O que uma nuvem disse pra outra?','"Você tá muito carregada hoje, vamos chover em outro lugar."'],
+    ['📚','O livro de matemática estava triste. Por quê?','Porque tinha muitos problemas.'],
+    ['🧀','Qual é o queijo que mais se acha?','O queijo prato... ele se acha a refeição principal.'],
+    ['🦩','Por que o flamingo fica numa perna só?','Porque se levantar as duas, cai.'],
+    ['🐐','O cabrito entrou num restaurante chique e pediu o cardápio.','Comeu o cardápio.'],
+    ['🎸','O violão terminou com o pandeiro. Motivo?','Ele dizia que o pandeiro só sabia bater.'],
+    ['🐙','Quanto o polvo paga de academia?','Oito mensalidades. Uma por braço.']
+  ];
+  const nextJoke = bag(jokes); let jokeTold = 0;
+  $('#jokeBtn').onclick = () => {
+    vibrate(); const [e, q, p] = nextJoke(); jokeTold++;
+    const box = $('#jokeBox'); box.style.animation = 'none'; void box.offsetWidth; box.style.animation = 'pop .45s cubic-bezier(.2,1.6,.4,1)';
+    $('#jokeEmoji').textContent = e; $('#jokeText').textContent = q; $('#jokePunch').textContent = '';
+    $('#jokeReact').textContent = '';
+    clearTimeout(window._pt); window._pt = setTimeout(() => { $('#jokePunch').textContent = p + ' 🥁'; }, 1100);
+    $('#jokeCount').textContent = `Piadas ruins sobrevividas: ${jokeTold}`;
+    $('#jokeBtn').textContent = pick(['🤡 Outra!','😬 Mais uma, coragem','🙈 Manda a próxima','🥴 Piora aí']);
+  };
+  const reacts = [
+    ['Anotado. O comediante foi mandado pra casa pensar no que fez.','Registrado. A gente vai fingir que não ouviu.'],
+    ['Justo. Essa foi tão ruim que voltou a ser ruim.','O piadista pediu desculpas formalmente. 🫡'],
+    ['VITÓRIA! O comediante tá chorando de emoção. 🏆','Missão cumprida, cabritinho. 😂']
+  ];
+  document.querySelectorAll('#meter button').forEach(b => b.onclick = () => {
+    vibrate(); const r = +b.dataset.r; $('#jokeReact').textContent = pick(reacts[r]);
+    if (r === 2) confetti(['😂','🤡','🎉']);
+  });
+
+  /* ================= Card 5: música ================= */
+  const awards = [
+    '🏆 Melhor interpretação de "Meteoro" usando a escova de cabelo como microfone.',
+    '🏆 Maior agudo já registrado num quarto durante "Liberdade Provisória". O vizinho confirmou.',
+    '🏆 Prêmio Show Particular: cantar "Te Esperando" inteira olhando pro teto como se fosse clipe.',
+    '🏆 Categoria Fôlego Infinito: emendou três músicas de Henrique & Juliano sem respirar.',
+    '🏆 Prêmio "Acordando o Prédio" — homenagem a quem leva o título da música ao pé da letra.',
+    '🏆 Melhor coreografia improvisada usando apenas um braço e muita emoção.',
+    '🏆 Troféu Plateia Imaginária: agradeceu ao público de 80 mil pessoas que eram, na verdade, 3 almofadas.',
+    '🏆 Categoria Sofrência Profissional: cantou "Cuida Bem Dela" com a cara mais dramática do Brasil.',
+    '🏆 Prêmio Karaokê Sem Letra: errou a letra com tanta confiança que virou versão oficial.',
+    '🏆 Melhor dueto: você e o cabrito (ele só fez "béé", mas no tempo certo).'
+  ];
+  const nextAward = bag(awards);
+  $('#awardBtn').onclick = () => {
+    vibrate(); const t = $('#awardText'); t.textContent = '🥁 Rufem os tambores...';
+    $('#awardBtn').disabled = true;
+    setTimeout(() => { t.innerHTML = '<span style="color:var(--sky-d)">VOCÊ! 🎉</span><br>' + nextAward();
+      $('#awardBtn').disabled = false; $('#awardBtn').textContent = '✉️ Abrir outro envelope'; confetti(['🎤','🏆','🎶','✨']); }, 900);
+  };
+
+  const quiz = [
+    { q:'Tá tocando sertanejo no carro. Você:', o:[
+      ['Canta baixinho olhando pela janela, tipo clipe 🌙','l'], ['Aumenta o volume e canta como se fosse a última vez 🔊','h'] ] },
+    { q:'Seu microfone oficial em casa é:', o:[
+      ['A escova de cabelo, clássica e elegante 💇‍♀️','l'], ['O controle remoto, com direito a apontar pra plateia 📺','h'] ] },
+    { q:'Qual animal seria seu backing vocal?', o:[
+      ['Um gatinho que mia afinado 🐱','l'], ['Um cabrito que faz "béé" no refrão 🐐','h'] ] },
+    { q:'O show perfeito teria:', o:[
+      ['Luzinhas, estrelas e uma música que vira trilha sonora da vida ✨','l'], ['Estádio lotado, todo mundo gritando o refrão junto 🏟️','h'] ] }
+  ];
+  const results = {
+    l:{ e:'🌠', t:'Vibe Luan Santana', x:'Você é a pessoa que transforma qualquer viagem de ônibus em clipe com câmera lenta. Trilha sonora sugerida: "Meteoro" e "Sinais". Chance de cantar olhando pro céu: 97%.' },
+    h:{ e:'🎤', t:'Vibe Henrique & Juliano', x:'Você não canta, você FAZ SHOW. O quarto vira arena e o vizinho vira plateia (sem pedir). Trilha sonora sugerida: "Liberdade Provisória" e "Arranhão", no volume máximo.' },
+    e:{ e:'⚖️', t:'Empate técnico: vibe dupla!', x:'Você é a ponte entre os dois mundos: canta Luan Santana no começo da noite e Henrique & Juliano no final. O cabrito aprovou essa versatilidade.' }
+  };
+  let qi = 0, score = { l:0, h:0 };
+  function renderQuiz(){
+    const item = quiz[qi];
+    $('#quizStep').textContent = `Pergunta ${qi + 1} de ${quiz.length}`;
+    $('#quizQ').textContent = item.q;
+    const box = $('#quizOpts'); box.innerHTML = '';
+    item.o.forEach(([txt, v]) => {
+      const b = document.createElement('button'); b.textContent = txt;
+      b.onclick = () => { vibrate(); score[v]++; qi++; qi < quiz.length ? renderQuiz() : finishQuiz(); };
+      box.appendChild(b);
+    });
+  }
+  function finishQuiz(){
+    const k = score.l > score.h ? 'l' : score.h > score.l ? 'h' : 'e';
+    const r = results[k];
+    $('#quizBox').style.display = 'none';
+    $('#qrEmoji').textContent = r.e; $('#qrTitle').textContent = r.t; $('#qrText').textContent = r.x;
+    $('#quizResult').classList.add('show'); confetti(['🎶','🎤','⭐']);
+  }
+  $('#quizAgain').onclick = () => { qi = 0; score = { l:0, h:0 }; $('#quizResult').classList.remove('show'); $('#quizBox').style.display = ''; renderQuiz(); };
+  renderQuiz();
+
+  /* ================= Card 6: assembleia ================= */
+  const proposals = [
+    ['camarao','🦐 Camarão','Exige férias remuneradas. E não aceita "férias no espeto".'],
+    ['polvo','🐙 Polvo','Quer oito salários. Um por braço. "É questão de justiça", disse.'],
+    ['caranguejo','🦀 Caranguejo','Só aceita andar de lado. Propõe que todos os corredores sejam reformados na horizontal.'],
+    ['peixe','🐟 Peixe','Convocou a reunião... mas esqueceu por quê. Pediu 5 minutos pra lembrar. Já se passaram 3 horas.'],
+    ['camarao','🦐 Camarão','Propõe mudar o nome de "camarão ao alho e óleo" para "camarão em situação delicada".'],
+    ['polvo','🐙 Polvo','Exige oito luvas no inverno e um abraço coletivo que conte como oito abraços.'],
+    ['caranguejo','🦀 Caranguejo','Quer o direito de beliscar quem disser "andar pra trás é igual a caranguejo". Ele anda de LADO.'],
+    ['peixe','🐟 Peixe','Propõe que a água seja menos molhada. Ninguém entendeu, mas ele foi muito convicto.'],
+    ['camarao','🦐 Camarão','Solicita uma escada pra conseguir ver por cima da mesa da assembleia.'],
+    ['polvo','🐙 Polvo','Pede pra trocar a tinta de fuga por glitter. "Se é pra fugir, que seja com estilo."'],
+    ['caranguejo','🦀 Caranguejo','Quer um dia oficial da pinça. Feriado nacional, com desfile (de lado).'],
+    ['peixe','🐟 Peixe','Pede um aquário com Wi-Fi pra assistir série no fundo do mar.'],
+    ['camarao','🦐 Camarão','Exige plano de saúde que cubra "momentos de tensão perto de restaurantes".'],
+    ['polvo','🐙 Polvo','Quer ser eleito presidente porque "consegue votar oito vezes". A mesa negou.'],
+    ['caranguejo','🦀 Caranguejo','Propõe proibir a palavra "casquinha" em qualquer cardápio. Assunto sensível.'],
+    ['peixe','🐟 Peixe','Lembrou por que convocou a reunião! ...Esqueceu de novo.'],
+    ['camarao','🦐 Camarão','Quer academia gratuita pra deixar de ser chamado de "pequeno". Já tem até o shape planejado.'],
+    ['polvo','🐙 Polvo','Exige ser o único DJ das festas do oceano. Toca oito músicas ao mesmo tempo.']
+  ];
+  const nextProposal = bag(proposals);
+  let currentProposal = false, approved = 0, vetoed = 0;
+  $('#proposalBtn').onclick = () => {
+    vibrate();
+    const [m, who, txt] = nextProposal();
+    document.querySelectorAll('.member').forEach(x => x.classList.toggle('speaking', x.dataset.m === m));
+    const g = $('#gavel'); g.classList.remove('hit'); void g.offsetWidth; g.classList.add('hit');
+    const p = $('#proposal'); p.style.animation = 'none'; void p.offsetWidth; p.style.animation = '';
+    p.innerHTML = `<span class="who">${who} tem a palavra:</span>${txt}`;
+    currentProposal = true;
+  };
+  function vote(ok){
+    vibrate(25);
+    if (!currentProposal) return toast('Primeiro sorteia uma proposta! 📜');
+    currentProposal = false;
+    if (ok){ approved++; confetti(['🦐','🐙','🦀','🐟','🫧']); toast('Proposta APROVADA! 🎉'); }
+    else { vetoed++; toast(pick(['Vetada! O polvo ficou ofendido 8 vezes 🐙','Vetada! O caranguejo saiu de lado 🦀','Vetada! O peixe nem lembra 🐟'])); }
+    $('#approveCount').textContent = `✅ ${approved} aprovada${approved === 1 ? '' : 's'}`;
+    $('#vetoCount').textContent = `❌ ${vetoed} vetada${vetoed === 1 ? '' : 's'}`;
+  }
+  $('#approveBtn').onclick = () => vote(true);
+  $('#vetoBtn').onclick = () => vote(false);
+  const ocean = $('#ocean');
+  for (let i = 0; i < 7; i++){
+    const b = document.createElement('span'); b.className = 'bub';
+    b.style.left = 5 + Math.random() * 90 + '%'; b.style.animationDelay = Math.random() * 4 + 's';
+    b.style.width = b.style.height = 6 + Math.random() * 8 + 'px';
+    ocean.appendChild(b);
+  }
+
+  /* ================= Card final ================= */
+  function openLetter(){
+    if ($('#letter').classList.contains('show')) return;
+    vibrate(40); $('#letter').classList.add('show'); $('#openLetterBtn').style.display = 'none';
+    $('#envelopeBig').textContent = '📬'; confetti(['🌸','✨','🐐','😂']);
+    setTimeout(() => $('#letter').scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
+  }
+  $('#openLetterBtn').onclick = openLetter;
+  $('#envelopeBig').onclick = openLetter;
+  $('#restartBtn').onclick = () => show(0, -1);
+
+  show(0);
+})();
+</script>
+</body>
+</html>
